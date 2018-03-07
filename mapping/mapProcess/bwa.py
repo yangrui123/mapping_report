@@ -3,32 +3,40 @@
 __author__ = 'yangrui'
 
 import sys,os
-from sam2bam import sam2bam 
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(cwd,'../'))
-from config import bwa
+try:
+    from config import bwa
+    from config import samtools
+except:
+    bwa = 'bwa'
+    samtools = 'samtools'
 from jbiot import log
+from jbiot import jbiotWorker
 
 
-def aln(fq1, fq2, prefix, ref, parms):
+def aln(parms):
     """bwa aligner
     
     Args:
-        fq1 (str): the first fastq file
-        fq2 (str): the second fastq file
-        prefix (str): prefix of output file
-        ref_bwa (str): reference file for bwa
-        threads (str/int): threads for bwa
+        parms (dict): {fq1:'the first fastq file', fq2:'the second fastq file', prefix:'prefix of output file', reference:'reference file for bwa', args:'extra args for map'}
  
     Returns:
-        bam (str): bam filename  
+        bam( dict): {bam:prefix.bam}
     """
+    fq1 = parms['fq1']
+    fq2 = parms['fq2']
+    prefix = parms['prefix']
+    ref = parms['reference']
+    args = parms['args']
     if fq2:
-        sam = DoubleQ(fq1, fq2, prefix, ref, parms)
+        sam = DoubleQ(fq1, fq2, prefix, ref, args)
     else:
-        sam = SingleQ(fq1, prefix, ref, parms)
-    bam = sam2bam(sam, prefix+'.bwa')
-    return bam
+        sam = SingleQ(fq1, prefix, ref, args)
+    bam = prefix+'.bam'
+    cmd = "%s view -bS %s > %s" %(samtools, sam, bam)
+    log.run('sam to bam', cmd)
+    return {'bam':bam}
 
 
 def DoubleQ(fq1, fq2, prefix,ref, parms):
@@ -49,3 +57,7 @@ def SingleQ(fq1, prefix, ref, parms):
     log.run(tag,cmd)
     return sam
 
+
+def BwaWorker(jbiotWorker):
+    def handle_task(self, key, params):
+        self.execute(aln, params)

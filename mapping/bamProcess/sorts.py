@@ -6,28 +6,27 @@ import sys, os
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(cwd,'../'))
 
-from config import sambamba
-from config import picard 
+try:
+    from config import sambamba
+except:
+    sambamba = 'sambamba'
+    picard = ''
 from jbiot import log
+from jbiot import jbiotWorker
 
 
-def sorts(bam, prefix, parms):
+def sorts(parms):
+    bam = parms['bam']
+    prefix = parms['prefix']
+    args = parms['args']
     bam_sort = prefix + ".sort.bam"
-    cmd = "%s sort %s %s -o %s " % (sambamba,bam,parms, bam_sort)
-    #print cmd
+    cmd = "%s sort %s %s -o %s " % (sambamba,bam,args, bam_sort)
     log.run('sort bam', cmd)
-    return bam_sort
+    return {"bam":bam_sort, 'prefix': prefix}
 
 
-def reorderBAM(bam, prefix, ref):
-    bam_sort = prefix + ".reorder.bam"
-    cmd = "java -jar %s ReorderSam I=%s O=%s REFERENCE=%s"%(picard, bam, bam_sort, ref)
-    log.run('reorder bam', cmd)
-    return bam_sort
+class SortWorker(jbiotWorker):
+    def handle_task(self, key, params):
+        self.execute(sorts, params)
 
 
-if __name__ == '__main__':
-    bam = sys.argv[1]
-    prefix = sys.argv[2]
-    ref = sys.argv[3]
-    reorderBAM(bam, prefix, ref)

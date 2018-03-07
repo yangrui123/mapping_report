@@ -1,11 +1,19 @@
 import sys, os
-import config
+try:
+    import config
+except:
+    pass
 from jbiot import log
+from jbiot import jbiotWorker
 import xlwt
-import json
 
 
-def mappingRateStat(targetFile, tstats, dstats, bstats, samples):
+def mappingRateStat(parms):
+    targetFile = parms['outFile']
+    tstats = parms['sortStats']
+    dstats = parms['dedupStats']
+    bstats = parms['targetStats']
+    samples = parms['samples']
     fwp = xlwt.Workbook()
     sheet1 = fwp.add_sheet('sheet1', cell_overwrite_ok=True)
     head = ['Sample', 'Total mapping rate', 'Proper rate', 'Deduplicated rate', 'Targeted rate']
@@ -38,7 +46,13 @@ def mappingRateStat(targetFile, tstats, dstats, bstats, samples):
         for j in range(len(tmp)):
             sheet1.write(i+1, j, tmp[j])
     fwp.save(targetFile)
+    return {'readsMappingRateStat':targetFile}
         
+
+class MapRateStatWorker(jbiotWorker):
+    def handle_task(self, key, params):
+        self.execute(mappingRateStat, params)
+
 
 if __name__ == '__main__':
     targetFile = sys.argv[1]
@@ -50,5 +64,5 @@ if __name__ == '__main__':
     dstats = dstats.split('-')
     tstats = tstats.split('-')
     samples = samples.split('-')
-    rate = mappingRateStat(targetFile, sstats, dstats, tstats, samples)
+    rate = mappingRateStat({'outFile':targetFile, 'sortStats':sstats, 'dedupStats': dstats, 'targetStats':tstats,'samples':samples})
 

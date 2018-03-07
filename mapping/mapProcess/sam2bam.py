@@ -5,7 +5,10 @@ __author__ = 'yangrui'
 import sys,os
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(cwd,'../'))
-from config import samtools
+try:
+    from config import samtools
+except:
+    samtools = 'samtools'
 from jbiot import log
 
 

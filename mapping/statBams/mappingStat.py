@@ -1,35 +1,27 @@
 import sys,os
-import xlwt
-from config import samtools
+try:
+    from config import samtools
+    from config import sambamba
+except:
+    samtools = 'samtools'
 from jbiot import log
-from config import sambamba
+from jbiot import jbiotWorker
 
 
-
-def statMappingRate(bams, suffix):
+def statMappingRate(parms):
+    bams = parms['bams']
+    suffix = parms['suffix']
     stats = []
     for bam, prefix in bams:
-        out = prefix + suffix
+        out = prefix + '.'+ suffix
         cmd = "%s flagstat %s > %s"%(samtools, bam, out)
         log.run("mapping stat", cmd, para=2)
         stats.append(out)
-    return stats
+    return {'bamStats':stats}
 
 
-def statCov(bams, bed):
-    outs = []
-    for bam, prefix in bams:
-        out = prefix + '.coverage.txt'
-        cmd = "%s depth region -L %s %s -o %s"%(sambamba, bed, bam, out)
-        log.run("stat coverage", cmd, para=2)
-        outs.append(out)
-    return outs
+class StatMapRate(jbiotWorker):
+    def handle_task(self, key, params):
+        self.execute(statMappingRate, parms)
 
 
-def uniqStat(bams):
-    outs = []
-    for bam in bams:
-        cmd = ""
-        log.run("stat unique mapped reads", cmd, para=2)
-        outs.append(out)
-    return outs

@@ -4,89 +4,112 @@ import yaml
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(cwd,'../'))
-from mapping.mapProcess.mapping import aligner
-from mapping.bamProcess.bamer import bamer
+from mapping.mapProcess.bwa import aln
+from mapping.bamProcess import sorts, dedups, intersects, indexs
+try:
+    import config
+except:
+    pass
+from jbiot import jbiotWorker
 
 
-def mapping(fq_dict, ref, map_parms):
+def mapping(parms):
+    fq_dict = parms['fastqs']
+    ref = parms['reference']
+    map_args = parms['map']
     bams = []
     for sample in fq_dict.keys():
         fqs = fq_dict[sample]
         fq1, fq2 = fqs[0][0], fqs[1][0]
-        aln = aligner(fq1,fq2,ref,sample,map_parms)
-        bam = aln.align()
+        inputs = {'fq1':fq1, 'fq2':fq2, 'reference':ref, 'args':map_args, 'prefix':str(sample)}
+        bam = aln(inputs)['bam']
         bams.append([bam, sample])
-    return bams
+    parms['bams'] = bams
+    return parms
 
 
-def bammer(bams,ref, bed, mem_of_java, sort_parms, realign_parms, bqsr_parms):
+def bammer(parms):
+    bams = parms['bams']
     dedupBams = []
     sortBams = []
     targetBams = []
     samples = []
     for bam, sample in bams:
-        bm = bamer(ref,sample)
-        bam_sort = bm.sort_bam(bam,sort_parms)
-        bam_dedup = bm.dedup_bam(bam_sort)
-        #bam_stat = bm.stat_bam(bam_dedup)
-        #bam_realign = bm.realign_bam(bam_dedup, realign_parms, mem_of_java)
-        bam_target = bm.intersect_bam(bam_dedup, bed)
-        bam_index = bm.index_bam(bam_dedup) 
-        bm.index_bam(bam_target)
-        #bam_bqsr = bm.bqsr_bam(bam_dedup,bed,bqsr_parms, mem_of_java)
-        dedupBams.append([bam_dedup, sample])
-        sortBams.append([bam_sort, sample])
-        targetBams.append([bam_target, sample])
-        samples.append(sample)
-    return sortBams, dedupBams, targetBams, samples
+        sort_outs = sorts.sorts({'bam':bam, 'prefix':str(sample), 'args': parms['sort']})
+        dedup_outs = dedups.dedups(sort_outs)
+        dedup_outs['bed'] = parms['bed']
+        intersect_outs = intersects.intersects(dedup_outs)
+        indexs.indexs(dedup_outs) 
+        indexs.indexs(intersect_outs)
+        dedupBams.append([dedup_outs['bam'], str(sample)])
+        sortBams.append([sort_outs['bam'], str(sample)])
+        targetBams.append([intersect_outs['bam'], str(sample)])
+        samples.append(str(sample))
+    return {'sortBams':sortBams, 'dedupBams':dedupBams, 'targetBams':targetBams, 'samples':samples, 'bed':parms['bed'], 'reference':parms['reference']}
 
 
-def reportArrge(sbams, dbams, tbams, ref, bed, samples, targetDir):
-    from mapping.statBams.mappingStat import statMappingRate, statCov
+def reportArrge(parms):
+    from mapping.statBams.mappingStat import statMappingRate
+    from mapping.statBams.covStat import statCov
     from mapping.arranger.arranger import arranger
     from mapping.report.report import report
-    sstats = statMappingRate(sbams, '.sort.mapping.stat')
-    dstats = statMappingRate(dbams, '.dedup.mapping.stat')
-    tstats = statMappingRate(tbams, '.target.mapping.stat')    
-    covs = statCov(tbams, bed)
-    templtParms = arranger(targetDir, sstats, dstats, tstats, covs, samples)
-    report(templtParms)
+    sstats = statMappingRate({'bams':parms['sortBams'], 'suffix':'sort.mapping.stat'})['bamStats']
+    dstats = statMappingRate({'bams':parms['dedupBams'], 'suffix':'dedup.mapping.stat'})['bamStats']
+    tstats = statMappingRate({'bams':parms['targetBams'], 'suffix':'target.mapping.stat'})['bamStats']
+    covs = statCov({'bams':parms['dedupBams'], 'bed':parms['bed']})
+    covs['suffix'] = 'cov.txt'
+    covs['sortStats'] = sstats
+    covs['dedupStats'] = dstats
+    covs['targetStats'] = tstats
+    covs['samples'] = parms['samples']
+    outs = arranger(covs)
+    outs['template'] = parms['template']
+    report(outs)
+
+
+def writeYaml(parms):
+    parmYaml = parms['parmYaml']
+    fp = open(parmYaml, 'r')
+    context = fp.read()
+    fp.close()
+    fwp = open(parmYaml, 'w')
+    fwp.write(context) 
+    bams = parms['bams']
+    fwp.write('bams:\n')
+    for bam in bams:
+        fwp.write('    '+bam[1]+': '+bam[0]+'\n')
+    fwp.close()    
+    
+ 
+
+def main(parms):
+    params = mapping(parms)  
+    outs = bammer(params)  
+    outs['template'] = parms['mapping_template']
+    reportArrge(outs)
+    parms['bams'] = outs['dedupBams']
+    writeYaml(parms)
+
+
+class MappingWorker(jbiotWorker):
+    def handle_task(self, key, params):
+        self.execute(main, params)
 
 
 if __name__ == '__main__':
     usage = '''
 Usage:
-    mapping_report.py [-h | --help]
-    mapping_report.py -i <input>  -c <parameter>
+    mapping_report.py -c <parameter>
 
 Options:
     -h --help
-    -i input --input=input          fastq file, yamal format
-    -c parms --parameter=parms      parameters
+    -c,--parameter=parms      parameters with yaml format
 '''
 
     from docopt import docopt
     args = docopt(usage)
-    fqYaml = args['--input']
     parmYaml = args['--parameter']
-    infp = open(fqYaml,'a+')
-    fq_dict = yaml.load(infp.read())['fastqs']
-    pafp = open(parmYaml, 'r')
-    parms_dict = yaml.load(pafp.read())
-    ref = parms_dict['reference']
-    map_parms = parms_dict['map']
-    bed = parms_dict['bed']
-    mem_of_java = parms_dict['mem_of_java']
-    sort_parms = parms_dict['sort']
-    realign_parms = parms_dict['realign']
-    bqsr_parms = parms_dict['bqsr']    
-    bams = mapping(fq_dict, ref, map_parms)
-    sbams, dbams, tbams, samples = bammer(bams, ref, bed, mem_of_java, sort_parms, realign_parms, bqsr_parms)
-    targetDir = parms_dict['resultsDirectory']
-    reportArrge(sbams, dbams, tbams, ref, bed, samples, targetDir)
-    infp.write('bams:\n')
-    for i in range(len(dbams)):
-        infp.write('    '+samples[i]+':'+' '+dbams[i][0]+'\n')
-    infp.close()    
-        
+    parms = yaml.load(open(parmYaml, 'r'))
+    parms['parmYaml'] = parmYaml
+    main(parms)
 

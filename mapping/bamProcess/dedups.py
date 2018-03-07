@@ -6,16 +6,20 @@ import sys, os
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(cwd,'../'))
 
-from config import picard_dedup
+try:
+    from config import picard_dedup
+except:
+    picard_dedup = 'MarkDuplicates.jar'
 from jbiot import log
+from jbiot import jbiotWorker
 
 
-def dedups(bam, prefix):
+def dedups(parms):
+    bam = parms['bam']
+    prefix = parms['prefix']
     bam_dedup = prefix + ".dedup.bam"
-    #logFile = prefix + ".dedup.log"
     cmd = "java -jar %s INPUT=%s OUTPUT=%s REMOVE_DUPLICATES=true AS=true VALIDATION_STRINGENCY=SILENT M=%s " % (picard_dedup,bam,bam_dedup,prefix+'.MarkDuplicates.stat')
-    #print cmd
     log.run('dedup bam', cmd)
-    return bam_dedup
+    return {'bam':bam_dedup, 'prefix': prefix}
 
 

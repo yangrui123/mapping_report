@@ -10,11 +10,16 @@ def covStat(cov, outfile):
     fwp = open(outfiles[i],'w')
     nx_list = []
     total = float(data.shape[0])
+    nxs = []
     for x in range(0,max_count):
         if x % 10 == 0:
             nx = len(data[data['meanCoverage']>=x])
-            fwp.write('\t'.join(['>='+str(x), str(nx/total)]))
-            fwp.write('\n')
+            nxs.append([x,nx])
+    for i in range(min(50, len(nxs))):
+        nx = nxs[i][1]
+        x = nxs[i][0]
+        fwp.write('\t'.join(['>='+str(x), str(nx/total)]))
+        fwp.write('\n')
     fwp.close()
     
 
