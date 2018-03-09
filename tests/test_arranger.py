@@ -6,13 +6,20 @@ from arranger.arranger import arranger
 
 
 def test_arranger():
-    targetDir = "./"
-    sstats = ['tumor.sort.stat','normal.sort.stat']
-    dstats = ['tumor.dedup.stat', 'normal.sort.stat']
-    tstats = ['tumor.target.stat', 'normal.target.stat']
-    covs = ['tumor.cov.txt','normal.cov.txt']
+    path = "/home/testData/mapping_report/data"
+    sstats = [path+'tumor.sort.stat',path+'normal.sort.stat']
+    dstats = [path+'tumor.dedup.stat', path+'normal.sort.stat']
+    tstats = [path+'tumor.target.stat', path+'normal.target.stat']
     samples = ["tumor", "normal"]
-    arranger(targetDir, sstats, dstats, tstats, covs, samples)
+    parms = {}
+    parms['regionStats'] =  [path+'normal.coverage.base.txt', path+'tumor.coverage.base.txt']
+    parms['baseStats'] = [path+'normal.coverage.base.txt', path+'tumor.coverage.base.txt']
+    parms['sortStats'] = sstats
+    parms['dedupStats'] = dstats
+    parms['targetStats'] = tstats
+    parms['samples'] = samples
+    parms['suffix'] = 'cov.txt'
+    arranger()
 
 if __name__ == '__main__':
     test_arranger()

@@ -2,7 +2,7 @@ import sys, os
 cwd = os.path.dirname(os.path.abspath(__file__))
 
 
-parms = 'parms.yaml'
+parms = '/home/testData/mapping_report/data/parms.yaml'
 
 
 def test_mapping():

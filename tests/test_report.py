@@ -6,7 +6,7 @@ from report.report import report
 
 
 def test_report():
-    report('TempltRendrParms.json')    
+    report('mapping_template.json')    
 
 
 if __name__ == '__main__':

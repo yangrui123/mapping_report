@@ -5,8 +5,8 @@ from bamProcess.bamer import bamer
 
 
 ref = "/lustre/common/genomes/human/hg19/bwa_index/ucsc.hg19.fasta"
-bam = "tumor.map.raw.bam"
-bed = "/home/testData/genomic/127.bed"
+bam = "/home/testData/mapping_report/data/tumor.map.raw.bam"
+bed = "/home/testData/mapping_report/127.bed"
 
 def test_bammer():
     prefix = "tumor"

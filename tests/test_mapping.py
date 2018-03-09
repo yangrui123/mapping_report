@@ -5,8 +5,8 @@ from mapProcess.mapping import aligner
 
 
 ref = "/lustre/common/genomes/human/hg19/bwa_index/ucsc.hg19.fasta"
-fq1 = "/home/testData/genomic/tumor_R1.fq.gz"
-fq2 = "/home/testData/genomic/tumor_R2.fq.gz"
+fq1 = "/home/testData/mapping_report/tumor_R1.fq.gz"
+fq2 = "/home/testData/mapping_report/tumor_R2.fq.gz"
 
 
 def test_mapping():
