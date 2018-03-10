@@ -13,7 +13,7 @@ def test_bammer():
     sort_parms = "tmpdir='./'"
     sort_outs = sorts.sorts({'bam':bam, 'prefix':prefix, 'args': sort_parms})
     dedup_outs = dedups.dedups(sort_outs)
-    dedup_outs['bed'] = parms['bed']
+    dedup_outs['bed'] = bed
     intersect_outs = intersects.intersects(dedup_outs)
     indexs.indexs(dedup_outs)
     indexs.indexs(intersect_outs)
