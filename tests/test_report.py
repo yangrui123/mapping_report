@@ -6,7 +6,8 @@ from report.report import report
 
 
 def test_report():
-    report('mapping_template.json')    
+    parms = {'templtJson':'/home/testData/mapping_report/data/mapping_template.json', 'template':'/home/testData/mapping_report/mapping_template.md'}
+    res = report(parms)    
 
 
 if __name__ == '__main__':

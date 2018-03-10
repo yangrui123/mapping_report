@@ -16,7 +16,7 @@ from jbiot import jbiotWorker
 def mapping(parms):
     fq_dict = parms['fastqs']
     ref = parms['reference']
-    map_args = parms['map']
+    map_args = parms['bwa_args']
     bams = []
     for sample in fq_dict.keys():
         fqs = fq_dict[sample]
@@ -35,7 +35,7 @@ def bammer(parms):
     targetBams = []
     samples = []
     for bam, sample in bams:
-        sort_outs = sorts.sorts({'bam':bam, 'prefix':str(sample), 'args': parms['sort']})
+        sort_outs = sorts.sorts({'bam':bam, 'prefix':str(sample), 'args': parms['sambamba_sort_args']})
         dedup_outs = dedups.dedups(sort_outs)
         dedup_outs['bed'] = parms['bed']
         intersect_outs = intersects.intersects(dedup_outs)

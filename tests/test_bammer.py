@@ -1,7 +1,7 @@
 import sys,os
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(cwd, '../mapping'))
-from bamProcess.bamer import bamer
+from bamProcess import *
 
 
 ref = "/lustre/common/genomes/human/hg19/bwa_index/ucsc.hg19.fasta"
@@ -11,12 +11,12 @@ bed = "/home/testData/mapping_report/127.bed"
 def test_bammer():
     prefix = "tumor"
     sort_parms = "tmpdir='./'"
-    bm = bamer(ref, prefix)
-    bam_sort = bm.sort_bam(bam, sort_parms)
-    bam_dedup = bm.dedup_bam(bam_sort)
-    bam_target = bm.intersect_bam(bam_dedup, bed)
-    bm.index_bam(bam_dedup)
-    bm.index_bam(bam_target)
+    sort_outs = sorts.sorts({'bam':bam, 'prefix':prefix, 'args': sort_parms})
+    dedup_outs = dedups.dedups(sort_outs)
+    dedup_outs['bed'] = parms['bed']
+    intersect_outs = intersects.intersects(dedup_outs)
+    indexs.indexs(dedup_outs)
+    indexs.indexs(intersect_outs)
 
 
 if __name__ == '__main__':

@@ -4,7 +4,6 @@ try:
 except:
     render = 'render.py'
     md2html = 'md2html.py'
-import config
 from jbiot import log
 from jbiot import jbiotWorker
 import os
