@@ -1,7 +1,8 @@
 mapping analysis
 ===============
 
-[![Build Status](https://travis-ci.org/yangrui123/mapping_report.svg?branch=master)](https://travis-ci.org/yangrui123/mapping_report)
+.. image:: https://travis-ci.org/yangrui123/mapping_report.svg?branch=master
+    :target: https://travis-ci.org/yangrui123/mapping_report
 
 =======
 mapping
