@@ -19,7 +19,7 @@ def test_arranger():
     parms['targetStats'] = tstats
     parms['samples'] = samples
     parms['suffix'] = 'cov.txt'
-    arranger()
+    arranger(parms)
 
 if __name__ == '__main__':
     test_arranger()

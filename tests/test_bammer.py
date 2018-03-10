@@ -1,7 +1,7 @@
 import sys,os
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(cwd, '../mapping'))
-from bamProcess import *
+from bamProcess import sorts, dedups, intersects, indexs
 
 
 ref = "/lustre/common/genomes/human/hg19/bwa_index/ucsc.hg19.fasta"
