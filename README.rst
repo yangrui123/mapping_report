@@ -17,3 +17,7 @@ Note
 
 This project has been set up using PyScaffold 2.5.8. For details and usage
 information on PyScaffold see http://pyscaffold.readthedocs.org/.
+
+Image URL
+========
+https://travis-ci.org/yangrui123/mapping_report.svg?branch=master
