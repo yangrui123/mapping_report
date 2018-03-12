@@ -8,10 +8,6 @@ from jbiot import log
 from jbiot import jbiotWorker
 import os
 
-cwd = os.path.dirname(os.path.abspath(__file__))
-mappingTemplt = os.path.join(cwd, 'mapping_template.md')
-
-
 
 def report(parms):
     mappingTemplt = parms['template']

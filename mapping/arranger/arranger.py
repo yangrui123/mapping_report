@@ -9,8 +9,14 @@ import xlwt
 import json
 cwd = os.path.dirname(os.path.abspath(__file__))
 mapRate =os.path.join(cwd,'../statBams/mappingRateStat.py')
+if not os.path.exists(mapRate):
+    mapRate = 'mappingRateStat.py'
 covFormat = os.path.join(cwd,'../statBams/covFormat.py')
+if not os.path.exists(covFormat):
+    covFormat = "covFormat.py"
 nXplot = os.path.join(cwd,'../statBams/nX.r')
+if not os.path.exists(nXplot):
+    nXplot = "nX.r"
 
 
 def arranger(parms):
@@ -38,11 +44,11 @@ def arranger(parms):
         cmd = 'mv %s %s'%(region, mapStat)
         log.run('mv coverage stat files', cmd)
     mapRateFile = os.path.join(mapDir, "readsMappingRateStat.xlsx")
-    cmd = "python %s %s %s %s %s %s"%(mapRate, mapRateFile, '-'.join(sstats), '-'.join(dstats), '-'.join(tstats), '-'.join(samples))    
+    cmd = "%s %s %s %s %s %s"%(mapRate, mapRateFile, '-'.join(sstats), '-'.join(dstats), '-'.join(tstats), '-'.join(samples))    
     log.run("mapping rate stats", cmd)
     
     meanCovFile = os.path.join(mapDir,"AllFile.mean.coverage.xlsx")
-    cmd = "python %s %s %s %s %s "%(covFormat, '-'.join(baseStats), meanCovFile, '-'.join(samples), suffix)
+    cmd = "%s %s %s %s %s "%(covFormat, '-'.join(baseStats), meanCovFile, '-'.join(samples), suffix)
     log.run('bam coverage stats', cmd)
     
     nxs = []
