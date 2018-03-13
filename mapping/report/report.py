@@ -14,7 +14,7 @@ def report(parms):
     '''Generating report
 
     Args:
-        parms (dict) ::
+        parms (dict) : which has the following keys::
         
             {
                 template  : template of report
