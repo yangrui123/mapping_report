@@ -21,7 +21,7 @@ def arranger(parms):
     '''Arranging final results and generating report directory
     
     Args:
-        parms (dict) ::
+        parms (dict) : which has the following keys::
 
             {
                 regionStats: a list, results of sambamba depth region
