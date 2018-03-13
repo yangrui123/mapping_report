@@ -1,4 +1,4 @@
-#!/bin/python2.7
+#!/usr/bin/env python
 # coding:utf-8
 __author__ = 'yangrui'
 
@@ -19,10 +19,18 @@ def aln(parms):
     """bwa aligner
     
     Args:
-        parms (dict): {fq1:'the first fastq file', fq2:'the second fastq file', prefix:'prefix of output file', reference:'reference file for bwa', args:'extra args for map'}
+        parms (dict) :: 
+
+            {
+                fq1      : the first fastq file
+                fq2      : the second fastq file
+                prefix   : prefix of output file
+                reference: reference file for bwa
+                args     : extra args for map
+            }
  
     Returns:
-        bam( dict): {bam:prefix.bam}
+        dict: ``{"bam":"bam_file"}``
     """
     fq1 = parms['fq1']
     fq2 = parms['fq2']

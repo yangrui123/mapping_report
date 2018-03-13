@@ -4,38 +4,46 @@ mapping
 
 This is the documentation of **mapping**.
 
-.. note::
+Installation
+============
+use git to clone code::
+    
+    git clone git@123.57.226.13:/expan/DevRepos/mapping_report.git
 
-    This is the main page of your project's `Sphinx <http://sphinx-doc.org/>`_
-    documentation. It is formatted in `reStructuredText
-    <http://sphinx-doc.org/rest.html>`__. Add additional pages by creating
-    rst-files in ``docs`` and adding them to the `toctree
-    <http://sphinx-doc.org/markup/toctree.html>`_ below. Use then
-    `references <http://sphinx-doc.org/markup/inline.html>`__ in order to link
-    them from this page, e.g. :ref:`authors <authors>` and :ref:`changes`.
 
-    It is also possible to refer to the documentation of other Python packages
-    with the `Python domain syntax
-    <http://sphinx-doc.org/domains.html#the-python-domain>`__. By default you
-    can reference the documentation of `Sphinx <http://sphinx.pocoo.org>`__,
-    `Python <http://docs.python.org/>`__, `NumPy
-    <http://docs.scipy.org/doc/numpy>`__, `SciPy
-    <http://docs.scipy.org/doc/scipy/reference/>`__, `matplotlib
-    <http://matplotlib.sourceforge.net>`__, `Pandas
-    <http://pandas.pydata.org/pandas-docs/stable>`__, `Scikit-Learn
-    <http://scikit-learn.org/stable>`__. You can add more by
-    extending the ``intersphinx_mapping`` in your Sphinx's ``conf.py``.
+Usage
+=====
 
-    The pretty useful extension `autodoc
-    <http://www.sphinx-doc.org/en/stable/ext/autodoc.html>`__ is activated by
-    default and lets you include documentation from docstrings. Docstrings can
-    be written in `Google
-    <http://google.github.io/styleguide/pyguide.html#Comments>`__
-    (recommended!), `NumPy
-    <https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`__
-    and `classical
-    <http://www.sphinx-doc.org/en/stable/domains.html#info-field-lists>`__
-    style.
+mapping_report.py -h::
+
+    Usage:
+        mapping_report.py -c <parameter>
+
+    Options:
+        -h --help
+        -c,--conf <parameter>     parameters with yaml format
+
+Here is a sample for yaml file::
+
+    fastqs:
+        sample1:
+            - ['/home/testData/mapping_report/tumor_R1.fq.gz', 'tumor_R1']
+            - ['/home/testData/mapping_report/tumor_R2.fq.gz', 'tumor_R2']
+        sample2:
+            - ['/home/testData/mapping_report/normal_R1.fq.gz', 'normal_R1']
+            - ['/home/testData/mapping_report/normal_R2.fq.gz', 'normal_R2']
+
+    groups:
+        patient1:
+            tumor : sample1
+            normal: sample2 
+
+    reference         : "hg19.fasta"
+    bed               : "bed file"
+    mem_of_java       : 10G
+    bwa_args          : "args"
+    sambamba_sort_args: "args"
+    mapping_template  : "mapping_template.md"
 
 
 Contents

@@ -1,10 +1,10 @@
-#!/bin/python2.7
+#!/usr/bin/env python
 # coding:utf-8
 __author__ = 'yangrui'
 
 import sys, os
 cwd = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(cwd,'../'))
+sys.path.insert(0, os.path.join(cwd,'../'))
 
 try:
     from config import picard_dedup
@@ -15,6 +15,19 @@ from jbiot import jbiotWorker
 
 
 def dedups(parms):
+    '''dedup bam
+        
+    Args:
+        parms (dict) ::
+        
+            {
+                bam   : bam file
+                prefix: prefix of output
+            }
+    
+    Returns:
+        dict : ``{"bam":"bam_dedup", "prefix":"prefix"}``
+    '''
     bam = parms['bam']
     prefix = parms['prefix']
     bam_dedup = prefix + ".dedup.bam"

@@ -1,10 +1,10 @@
-#!/bin/python2.7
+#!/usr/bin/env python
 # coding:utf-8
 __author__ = 'yangrui'
 
 import sys, os
 cwd = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(cwd,'../'))
+sys.path.insert(0, os.path.join(cwd,'../'))
 
 try:
     from config import intersectBed
@@ -15,6 +15,20 @@ from jbiot import jbiotWorker
 
 
 def intersects(parms):
+    '''intersect bam with bed file
+    
+    Args:
+        parms (dict) ::
+        
+            {
+                bam   : bam file
+                bed   : bed file
+                prefix: prefix of output
+            }
+    
+    Returns:
+        dict : ``{"bam":"bam_target", "prefix":"prefix", "bed":"bed"}``
+    '''
     bam = parms['bam']
     bed = parms['bed']
     prefix = parms['prefix']

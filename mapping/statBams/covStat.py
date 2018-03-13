@@ -1,4 +1,6 @@
-import sys,os
+#!/usr/bin/env python
+import sys
+import os
 try:
     from config import sambamba
 except:
@@ -8,6 +10,19 @@ from jbiot import jbiotWorker
 
 
 def statCov(parms):
+    '''statistic coverage of every region and every base site
+    
+    Args:
+        parms (dict) ::
+    
+            {
+                bams: a list, [[bam1, prefix1],[bam2, prefix2], ...]
+                bed : bed file
+            }
+    
+    Returns:
+        dict : ``{"regionStats":"outputs_of_regionStat", "baseStats":"outputs_of_baseStat"}``
+    '''
     bams = parms['bams']
     bed = parms['bed']
     region_outs = []

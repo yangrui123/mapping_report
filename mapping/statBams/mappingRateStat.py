@@ -1,4 +1,6 @@
-import sys, os
+#!/usr/bin/env python
+import sys
+import os
 try:
     import config
 except:

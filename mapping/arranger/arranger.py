@@ -1,8 +1,6 @@
-import sys, os
-try:
-    from config import Rscript
-except:
-    Rscript = 'Rscript'
+#! /usr/bin/env python
+import sys
+import os
 from jbiot import log
 from jbiot import jbiotWorker
 import xlwt
@@ -20,13 +18,29 @@ if not os.path.exists(nXplot):
 
 
 def arranger(parms):
+    '''Arranging final results and generating report directory
+    
+    Args:
+        parms (dict) ::
+
+            {
+                regionStats: a list, results of sambamba depth region
+                baseStats  : a list, results of sambamba depth base
+                sortStats  : a list, results of sort bams called by samtools flagstat
+                dedupStats : a list, results of dedup bams called by samtools flagstat
+                targetStats: a list, results of target bams called by samtools flagstat
+                samples    : a list, prefixs of bams
+            }
+
+    Reruens:
+        dict : ``{"templtJson":"templtParms"}``
+    '''
     regionStats = parms['regionStats']
     baseStats = parms['baseStats']
     sstats = parms['sortStats']
     dstats = parms['dedupStats']
     tstats = parms['targetStats']
     samples = parms['samples']
-    suffix = parms['suffix']
     try:
         targetDir = parms['resultsDirectory']
     except:
@@ -48,15 +62,15 @@ def arranger(parms):
     log.run("mapping rate stats", cmd)
     
     meanCovFile = os.path.join(mapDir,"AllFile.mean.coverage.xlsx")
-    cmd = "%s %s %s %s %s "%(covFormat, '-'.join(baseStats), meanCovFile, '-'.join(samples), suffix)
+    cmd = "%s %s %s %s "%(covFormat, '-'.join(baseStats), meanCovFile, '-'.join(samples))
     log.run('bam coverage stats', cmd)
     
     nxs = []
     for sample in samples:
-        f = sample+'.'+suffix
+        f = sample+'.cov.txt'
         out1 = os.path.join(nXdir,sample + '.region.coverage.png')
         out2 = os.path.join(nXdir, sample + '.region.coverage.pdf')
-        cmd = "%s %s %s %s %s" %(Rscript, nXplot, f, os.path.join(nXdir,sample), sample)
+        cmd = "%s %s %s %s" %(nXplot, f, os.path.join(nXdir,sample), sample)
         log.run('plot target region coverage rate', cmd)
         nxs.append(out1)
 
@@ -71,9 +85,9 @@ def genTempltRendrParms(mapRateFile, meanCovFile, nxs):
     out_dict['targetRegionCovStat'] = meanCovFile
     out_dict['nXimages'] = nxs
     outfile = "mapping_template.json"
-    fwp = open(outfile, 'w')
-    fwp.write(json.dumps(out_dict))
-    fwp.close()
+    jstr= json.dumps(out_dict)
+    cmd = "echo '%s' > %s "%(jstr, outfile)
+    log.run('generate template json', cmd)
     return outfile
 
 

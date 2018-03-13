@@ -1,9 +1,10 @@
+#! /usr/bin/env python
 import sys
 import os
 import yaml
 
 cwd = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(cwd,'../'))
+sys.path.insert(0, os.path.join(cwd,'../'))
 from mapping.mapProcess.bwa import aln
 from mapping.bamProcess import sorts, dedups, intersects, indexs
 try:
@@ -57,7 +58,6 @@ def reportArrge(parms):
     dstats = statMappingRate({'bams':parms['dedupBams'], 'suffix':'dedup.mapping.stat'})['bamStats']
     tstats = statMappingRate({'bams':parms['targetBams'], 'suffix':'target.mapping.stat'})['bamStats']
     covs = statCov({'bams':parms['dedupBams'], 'bed':parms['bed']})
-    covs['suffix'] = 'cov.txt'
     covs['sortStats'] = sstats
     covs['dedupStats'] = dstats
     covs['targetStats'] = tstats
@@ -103,12 +103,12 @@ Usage:
 
 Options:
     -h --help
-    -c,--parameter=parms      parameters with yaml format
+    -c,--conf <parameter>     parameters with yaml format
 '''
 
     from docopt import docopt
     args = docopt(usage)
-    parmYaml = args['--parameter']
+    parmYaml = args['--conf']
     parms = yaml.load(open(parmYaml, 'r'))
     parms['parmYaml'] = parmYaml
     main(parms)

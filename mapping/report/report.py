@@ -1,3 +1,4 @@
+#! /usr/bin/env python 
 try:
     from config import render
     from config import md2html
@@ -10,12 +11,25 @@ import os
 
 
 def report(parms):
+    '''Generating report
+
+    Args:
+        parms (dict) ::
+        
+            {
+                template  : template of report
+                templtJson: json file, input parameter for template
+            }
+    
+    Returns:
+        dict : ``{"outfile":"report"}``
+    '''
     mappingTemplt = parms['template']
     ijson = parms['templtJson']
     out = "mapping_report.md"
     cmd = "%s -t %s -j %s -o %s" %(render, mappingTemplt, ijson, out)
     log.run("generating mapping report templete", cmd)
-    cmd = "python %s %s" %(md2html, out)
+    cmd = "%s %s" %(md2html, out)
     log.run("generating mapping report", cmd)
     return {'outfile': out}
 

@@ -1,4 +1,7 @@
-import sys, os
+#! /usr/bin/env python
+
+import sys
+import os
 import config
 import xlwt
 import json

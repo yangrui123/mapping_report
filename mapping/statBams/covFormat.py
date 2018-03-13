@@ -1,4 +1,7 @@
-import sys, os
+#!/usr/bin/env python
+
+import sys
+import os
 try:
     import config
 except:
@@ -9,10 +12,23 @@ from jbiot import jbiotWorker
 
 
 def MeanCovStat(parms):
+    '''statistic base coverage of each site
+        
+    Args:
+        parms (dict) ::
+            
+            {
+                covs   : outputs of "sambamba depth base"
+                samples: prefixs of covs
+                outfile: output of mean coverage for each sample
+            }
+
+    Rerutns:
+        dict : ``{"meanCovStat":"outfile"}``
+    '''
     covs = parms['covs']
     samples = parms['samples']
     outfile = parms['outfile']
-    suffix = parms['suffix']
     fwp = xlwt.Workbook()
     sheet1 = fwp.add_sheet('sheet1', cell_overwrite_ok=True)
     head = ["Sample", 'Target region mean coverage', 'Std']
@@ -26,7 +42,7 @@ def MeanCovStat(parms):
         for j in range(len(tmp)):
             sheet1.write(i+1, j, tmp[j])
         max_count = int(data['COV'].max()) 
-        fwp2 = open(samples[i]+'.'+suffix, 'w')
+        fwp2 = open(samples[i]+'.cov.txt', 'w')
         nx_list = []
         total = float(data.shape[0])
         nxs = []
