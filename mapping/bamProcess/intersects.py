@@ -18,7 +18,7 @@ def intersects(parms):
     '''intersect bam with bed file
     
     Args:
-        parms (dict) ::
+        parms (dict) : which has the following keys::
         
             {
                 bam   : bam file

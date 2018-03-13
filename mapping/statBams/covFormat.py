@@ -15,7 +15,7 @@ def MeanCovStat(parms):
     '''statistic base coverage of each site
         
     Args:
-        parms (dict) ::
+        parms (dict) : which has the following keys::
             
             {
                 covs   : outputs of "sambamba depth base"

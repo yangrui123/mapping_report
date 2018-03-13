@@ -13,7 +13,7 @@ def statCov(parms):
     '''statistic coverage of every region and every base site
     
     Args:
-        parms (dict) ::
+        parms (dict) : which has the following keys::
     
             {
                 bams: a list, [[bam1, prefix1],[bam2, prefix2], ...]

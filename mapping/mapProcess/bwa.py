@@ -19,7 +19,7 @@ def aln(parms):
     """bwa aligner
     
     Args:
-        parms (dict) :: 
+        parms (dict) : which has the following keys:: 
 
             {
                 fq1      : the first fastq file

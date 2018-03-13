@@ -19,7 +19,7 @@ def indexs(parms):
     '''index bam
     
     Args:
-        parms (dict) ::
+        parms (dict) : which has the following keys::
         
             {
                 bam: bam file
