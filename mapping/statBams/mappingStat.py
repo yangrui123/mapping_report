@@ -6,6 +6,7 @@ try:
     from config import sambamba
 except:
     samtools = 'samtools'
+    sambamba = 'sambamba'
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 mapRate =os.path.join(cwd,'../statBams/mappingRateStat.py')
