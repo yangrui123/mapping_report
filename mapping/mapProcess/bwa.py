@@ -68,4 +68,4 @@ def SingleQ(fq1, prefix, ref, parms):
 
 def BwaWorker(jbiotWorker):
     def handle_task(self, key, params):
-        self.execute(aln, params)
+        self.execMyfunc(aln, params)

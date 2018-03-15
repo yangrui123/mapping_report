@@ -49,22 +49,21 @@ def bammer(parms):
     return {'sortBams':sortBams, 'dedupBams':dedupBams, 'targetBams':targetBams, 'samples':samples, 'bed':parms['bed'], 'reference':parms['reference']}
 
 
-def reportArrge(parms):
+
+def statBam(parms):
     from mapping.statBams.mappingStat import statMappingRate
-    from mapping.statBams.covStat import statCov
+    covs = statMappingRate(parms)
+    return covs
+
+
+
+def reportArrge(parms):
     from mapping.arranger.arranger import arranger
     from mapping.report.report import report
-    sstats = statMappingRate({'bams':parms['sortBams'], 'suffix':'sort.mapping.stat'})['bamStats']
-    dstats = statMappingRate({'bams':parms['dedupBams'], 'suffix':'dedup.mapping.stat'})['bamStats']
-    tstats = statMappingRate({'bams':parms['targetBams'], 'suffix':'target.mapping.stat'})['bamStats']
-    covs = statCov({'bams':parms['dedupBams'], 'bed':parms['bed']})
-    covs['sortStats'] = sstats
-    covs['dedupStats'] = dstats
-    covs['targetStats'] = tstats
-    covs['samples'] = parms['samples']
-    outs = arranger(covs)
+    outs = arranger(parms)
     outs['template'] = parms['template']
     report(outs)
+
 
 
 def writeYaml(parms):
@@ -83,17 +82,18 @@ def writeYaml(parms):
  
 
 def main(parms):
-    params = mapping(parms)  
-    outs = bammer(params)  
+    map_outs = mapping(parms)  
+    bam_outs = bammer(map_outs)  
+    outs = statBam(bam_outs)
     outs['template'] = parms['mapping_template']
     reportArrge(outs)
-    parms['bams'] = outs['dedupBams']
+    parms['bams'] = bam_outs['dedupBams']
     writeYaml(parms)
 
 
 class MappingWorker(jbiotWorker):
     def handle_task(self, key, params):
-        self.execute(main, params)
+        self.execMyfunc(main, params)
 
 
 if __name__ == '__main__':

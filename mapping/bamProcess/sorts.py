@@ -10,7 +10,6 @@ try:
     from config import sambamba
 except:
     sambamba = 'sambamba'
-    picard = ''
 from jbiot import log
 from jbiot import jbiotWorker
 
@@ -41,6 +40,6 @@ def sorts(parms):
 
 class SortWorker(jbiotWorker):
     def handle_task(self, key, params):
-        self.execute(sorts, params)
+        self.execMyfunc(sorts, params)
 
 

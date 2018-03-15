@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(cwd,'../'))
 try:
     from config import picard_dedup
 except:
-    picard_dedup = 'MarkDuplicates.jar'
+    picard_dedup = '/opt/MarkDuplicates.jar'
 from jbiot import log
 from jbiot import jbiotWorker
 
@@ -36,3 +36,6 @@ def dedups(parms):
     return {'bam':bam_dedup, 'prefix': prefix}
 
 
+class DupWorker(jbiotWorker):
+    def handle_task(self, key, params):
+        self.execMyfunc(dedups, params)

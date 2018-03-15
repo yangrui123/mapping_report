@@ -50,7 +50,7 @@ def uniqStat(bams):
 
 class StatCovWorker(jbiotWorker):
     def handle_task(self, key, params):
-        self.execute(statCov, params)
+        self.execMyfunc(statCov, params)
 
 
 

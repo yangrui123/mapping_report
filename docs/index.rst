@@ -33,11 +33,6 @@ Here is a sample for yaml file::
             - ['/home/testData/mapping_report/normal_R1.fq.gz', 'normal_R1']
             - ['/home/testData/mapping_report/normal_R2.fq.gz', 'normal_R2']
 
-    groups:
-        patient1:
-            tumor : sample1
-            normal: sample2 
-
     reference         : "hg19.fasta"
     bed               : "bed file"
     mem_of_java       : 10G

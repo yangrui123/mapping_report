@@ -1,4 +1,5 @@
-import sys,os
+import sys
+import os
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(cwd, '../mapping'))
 from report.report import report

@@ -4,22 +4,16 @@ sys.path.append(os.path.join(cwd, '../mapping'))
 from arranger.arranger import arranger
 
 
+PATH = "/home/testData/mapping_report/data"
 
 def test_arranger():
-    path = "/home/testData/mapping_report/data"
-    sstats = [path+'tumor.sort.stat',path+'normal.sort.stat']
-    dstats = [path+'tumor.dedup.stat', path+'normal.sort.stat']
-    tstats = [path+'tumor.target.stat', path+'normal.target.stat']
-    samples = ["tumor", "normal"]
     parms = {}
-    parms['regionStats'] =  [path+'normal.coverage.base.txt', path+'tumor.coverage.base.txt']
-    parms['baseStats'] = [path+'normal.coverage.base.txt', path+'tumor.coverage.base.txt']
-    parms['sortStats'] = sstats
-    parms['dedupStats'] = dstats
-    parms['targetStats'] = tstats
-    parms['samples'] = samples
-    parms['suffix'] = 'cov.txt'
+    parms['regionStats'] =  [PATH+'normal.coverage.base.txt', PATH+'tumor.coverage.base.txt']
+    parms['mapRateFile'] =  PATH+'readsMappingRateStat.xlsx'
+    parms['meanCovFile'] = PATH+'AllFile.mean.coverage.xlsx'
+    parms['nXs'] = []
     arranger(parms)
+
 
 if __name__ == '__main__':
     test_arranger()

@@ -40,5 +40,5 @@ def intersects(parms):
 
 class IntrsctWorker(jbiotWorker):
     def handle_task(self, key, params):
-        self.execute(intersects, params)
+        self.execMyfunc(intersects, params)
 

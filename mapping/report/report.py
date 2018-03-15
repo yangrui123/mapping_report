@@ -10,6 +10,20 @@ from jbiot import jbiotWorker
 import os
 
 
+def get_templt(remotefile):
+    home = os.environ["HOME"]
+    localfile = remotefile.split("/")[-1]
+    cmd = "wget %s -P %s/.templates " % (home,remotefile)
+
+    localfile1 = os.path.join(home,".templates",localfile)
+    localfile2 = os.path.join("~",".templates",localfile)
+    if os.path.exists(localfile1):
+        return localfile1
+    os.system(cmd)
+    return localfile1
+
+
+
 def report(parms):
     '''Generating report
 
@@ -25,6 +39,8 @@ def report(parms):
         dict : ``{"outfile":"report"}``
     '''
     mappingTemplt = parms['template']
+    if mappingTemplt.startswith("http://"):
+        mappingTemplt = get_templt(mappingTemplt)
     ijson = parms['templtJson']
     out = "mapping_report.md"
     cmd = "%s -t %s -j %s -o %s" %(render, mappingTemplt, ijson, out)
@@ -36,4 +52,4 @@ def report(parms):
 
 class ReportWorker(jbiotWorker):
     def handle_task(self, key, params):
-        self.execute(report, params)
+        self.execMyfunc(report, params)

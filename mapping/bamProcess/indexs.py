@@ -34,4 +34,4 @@ def indexs(parms):
 
 class IndxWorker(jbiotWorker):
     def handle_task(self, key, params):
-        self.execute(indexs, params)
+        self.execMyfunc(indexs, params)

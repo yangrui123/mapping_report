@@ -62,15 +62,14 @@ def MeanCovStat(parms):
 
 class MeanCovStatWorker(jbiotWorker):
     def handle_task(self, key, params):
-        self.execute(MeanCovStat, params)
+        self.execMyfunc(MeanCovStat, params)
  
 
 if __name__ == '__main__':
     covs = sys.argv[1]
     outfile = sys.argv[2]
     samples = sys.argv[3]
-    suffix = sys.argv[4]
     samples = samples.split('-')
     covs = covs.split('-')
-    MeanCovStat({'covs':covs, 'samples':samples, 'outfile':outfile, 'suffix':suffix})
+    MeanCovStat({'covs':covs, 'samples':samples, 'outfile':outfile})
 
